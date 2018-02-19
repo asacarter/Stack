@@ -2,7 +2,7 @@ package stack;
 
 public class ArrayStack<T> implements Stack<T> {
     
-    private final int INITIAL_SIZE = 2;
+    private final int INITIAL_SIZE = 1;
     private int size;
     private int topIndex;
     private T[] storage;
@@ -31,7 +31,18 @@ public class ArrayStack<T> implements Stack<T> {
         if (isEmpty()) {
             throw new StackUnderflowException();
         }
+
         topIndex = topIndex - 1;
+
+        T[] tmp = storage;
+        storage = (T[]) new Object[size - 1];
+        for (int i = 0; i <= topIndex; i++) {
+            storage[i] = tmp[i];
+            if (i==0) {
+                storage[topIndex] = tmp[i];
+            }
+        }
+        size = storage.length;
     }
     
     @Override
@@ -39,7 +50,7 @@ public class ArrayStack<T> implements Stack<T> {
         topIndex = topIndex + 1;
         if (topIndex >= size) {
             T[] tmp = storage;
-            storage = (T[]) new Object[2 * size];
+            storage = (T[]) new Object[size + 1];
             for (int i = 0; i < topIndex; i++) {
                 storage[i] = tmp[i];
             }
@@ -47,22 +58,18 @@ public class ArrayStack<T> implements Stack<T> {
         }
         storage[topIndex] = item;
     }
-    
+
     @Override
     public String toString() {
-        String result = "ArrayStack: size = " + size;
-        result += ", topIndex = " + topIndex;
-        result += ", contents = [";
+        String result = "[";
         for (int i = 0; i < size; i++) {
             if (i > 0) {
                 result += ", ";
             }
             result += storage[i];
         }
-        result += "], isEmpty() = " + isEmpty();
-        if (!isEmpty()) {
-            result += ", top() = " + top();
-        }
+        result += "]";
+
         return result;
     }
 }
